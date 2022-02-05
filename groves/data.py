@@ -487,7 +487,7 @@ def TrackMateOutputFactory(path,read=False,force=False) -> TrackMateOutput:
 # UtilityClass
 
 class Stream(object):
-    def __init__(self,ri:RawImage,md:MetaData):
+    def __init__(self,ri:RawImage,md:MetaData,read=False):
         """Utility class to read RawImage and MetaData in combination.
 
         Args:
@@ -498,6 +498,8 @@ class Stream(object):
         """ 
         self.ri = ri
         self.md = md
+        if read:
+            self.read()
     def read(self):
         '''read both RawImage and MetaData'''
         self.ri.read()
@@ -594,9 +596,9 @@ class Stream(object):
 from pathlib import Path
 
 class StreamPath:
-    def __init__(self,root:str):
+    def __init__(self,root:str,imglobkey=None,metaglobkey=None):
         self.p = Path(root)
-        self.search()
+        self.search(imglobkey,metaglobkey)
     def search(self,imglobkey=None,metaglobkey=None):
         if imglobkey is None:
             self.rawim = sorted(self.p.glob('*.ome.tif'))[0]
@@ -607,11 +609,11 @@ class StreamPath:
         else:
             self.meta = sorted(self.p.glob(metaglobkey))[0]
         self.processed = self.p/'processed'
-    def generate_stream(self):
+    def generate_stream(self,read=False):
         '''returns Stream object'''
         ri = RawImage(self.rawim)
         md = MetaData(self.meta)
-        st = Stream(ri,md)
+        st = Stream(ri,md,read)
         return st
 
 class ChamberPath():
@@ -629,16 +631,3 @@ class ChamberPath():
         return self.streams
         
             
-
-
-
-
-
-def test_tm():
-    path ='C:\\Users\\tukuk\\Documents\\groves\\experiments\\scope8\\20220119_SM55_LAT\\ch1_05MCC_LATCal\\densitysnaps_20mW_1000gain\\processed\\cropped.xml'
-    tmo = TrackMateOutput(path,read=True)
-    singletons, with_track = tmo.get_spots_with_track_id()
-    a=0
-
-if __name__=='__main__':
-    test_tm()

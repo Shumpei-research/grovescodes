@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import PurePath,Path
-import pandas as pd
-import numpy as np
 import json
 from json import JSONEncoder
 import os
-import tifffile as tif
 import abc
+
+import numpy as np
+import pandas as pd
+import tifffile as tif
 
 
 class ReaderWriter(abc.ABC):
